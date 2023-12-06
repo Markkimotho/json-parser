@@ -9,11 +9,10 @@ In this project, I will build a custom JSON parser.
 This json-parser will be initially developed by `Python` and then by `C` later 
 
 ## Usage
-Usage:
-        `//TODO`
+`//TODO`
 
 ## Features
-        `//TODO
+`//TODO`
 
 ## Getting Started
 This project can be accessed in two ways:
@@ -29,7 +28,7 @@ This project can be accessed in two ways:
 This is an **open project**, therefore **contributions are welcome**! If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request.
 
 ## Acknowledgements
-`//TODO
-`
+`//TODO`
+
 ## Contact 
 For any inquiries or questions, you can reach out to [me](mailto:kimothomark93@gmail.com).
