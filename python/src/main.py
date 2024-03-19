@@ -1,7 +1,5 @@
 import sys
 
-class JSONLexerError(Exception):
-    pass
 class JSONParser:
     def parse(self, json_str):
         if not json_str.strip():  # Check if JSON string is empty or contains only whitespace
@@ -12,52 +10,7 @@ class JSONParser:
         try:
             token = lexer.get_next_token()
             if token.type == 'LBRACE':
-                while True:
-                    token = lexer.get_next_token()
-                    if token.type == 'STRING':
-                        key = token.value
-                        token = lexer.get_next_token()
-                        if token.type == 'COLON':
-                            token = lexer.get_next_token()
-                            if token.type == 'STRING':
-                                # Key-value pair found
-                                token = lexer.get_next_token()
-                                if token.type == 'RBRACE':
-                                    token = lexer.get_next_token()
-                                    if token.type == 'EOF':
-                                        print("Valid JSON")
-                                        sys.exit(0)
-                                    elif token.type == 'COMMA':
-                                        continue
-                                    else:
-                                        print("Invalid JSON: Unexpected token after object")
-                                        sys.exit(1)
-                                elif token.type == 'COMMA':
-                                    token = lexer.get_next_token()
-                                    if token.type == 'STRING':
-                                        continue
-                                    else:
-                                        print("Invalid JSON: Expected string key after comma")
-                                        sys.exit(1)
-                                else:
-                                    print("Invalid JSON: Expected '}' or ',' after value")
-                                    sys.exit(1)
-                            else:
-                                print("Invalid JSON: Expected string value after ':'")
-                                sys.exit(1)
-                        else:
-                            print("Invalid JSON: Expected ':' after key")
-                            sys.exit(1)
-                    elif token.type == 'RBRACE':
-                        if lexer.get_next_token().type == 'EOF':
-                            print("Valid JSON")
-                            sys.exit(0)
-                        else:
-                            print("Invalid JSON: Unexpected token after object")
-                            sys.exit(1)
-                    else:
-                        print("Invalid JSON: Expected string key or '}'")
-                        sys.exit(1)
+                self.parse_object(lexer)
             else:
                 print("Invalid JSON: Expected '{'")
                 sys.exit(1)
@@ -65,6 +18,77 @@ class JSONParser:
             print("Invalid JSON:", e)
             sys.exit(1)
 
+    def parse_object(self, lexer):
+        token = lexer.get_next_token()
+        while token.type != 'RBRACE':
+            if token.type == 'STRING':
+                key = token.value
+                token = lexer.get_next_token()
+                if token.type == 'COLON':
+                    token = lexer.get_next_token()
+                    if token.type in ['STRING', 'NUMBER', 'BOOLEAN', 'NULL']:
+                        # Key-value pair found
+                        token = lexer.get_next_token()
+                        if token.type == 'RBRACE':
+                            print("Valid JSON")
+                            sys.exit(0)
+                        elif token.type == 'COMMA':
+                            token = lexer.get_next_token()
+                            if token.type == 'STRING':
+                                continue
+                            else:
+                                print("Invalid JSON: Expected string key after ','")
+                                sys.exit(1)
+                        else:
+                            print("Invalid JSON: Expected '}' or ',' after value")
+                            sys.exit(1)
+                    elif token.type == 'LBRACE':
+                        # Nested object
+                        self.parse_object(lexer)
+                        token = lexer.get_next_token()
+                    elif token.type == 'LBRACKET':
+                        # Array
+                        self.parse_array(lexer)
+                        token = lexer.get_next_token()
+                    else:
+                        print("Invalid JSON: Expected string, number, boolean, or null value after ':'")
+                        sys.exit(1)
+                else:
+                    print("Invalid JSON: Expected ':' after key")
+                    sys.exit(1)
+            else:
+                print("Invalid JSON: Expected string key")
+                sys.exit(1)
+
+    def parse_array(self, lexer):
+        token = lexer.get_next_token()
+        while token.type != 'RBRACKET':
+            if token.type in ['STRING', 'NUMBER', 'BOOLEAN', 'NULL']:
+                token = lexer.get_next_token()
+                if token.type == 'RBRACKET':
+                    print("Valid JSON")
+                    sys.exit(0)
+                elif token.type == 'COMMA':
+                    token = lexer.get_next_token()
+                    if token.type in ['STRING', 'NUMBER', 'BOOLEAN', 'NULL']:
+                        continue
+                    else:
+                        print("Invalid JSON: Expected value after ','")
+                        sys.exit(1)
+                else:
+                    print("Invalid JSON: Expected ']' or ',' after value")
+                    sys.exit(1)
+            elif token.type == 'LBRACE':
+                # Nested object
+                self.parse_object(lexer)
+                token = lexer.get_next_token()
+            elif token.type == 'LBRACKET':
+                # Nested array
+                self.parse_array(lexer)
+                token = lexer.get_next_token()
+            else:
+                print("Invalid JSON: Expected string, number, boolean, null, object, or array value")
+                sys.exit(1)
 
 class JSONLexer:
     def __init__(self, text):
@@ -92,6 +116,18 @@ class JSONLexer:
                 return Token('COMMA')
             elif self.current_char == '"':
                 return self.read_string()
+            elif self.current_char.isdigit() or self.current_char == '-':
+                return self.read_number()
+            elif self.current_char == 't' or self.current_char == 'f':
+                return self.read_boolean()
+            elif self.current_char == 'n':
+                return self.read_null()
+            elif self.current_char == '[':
+                self.advance()
+                return Token('LBRACKET')
+            elif self.current_char == ']':
+                self.advance()
+                return Token('RBRACKET')
             else:
                 self.error()
 
@@ -105,6 +141,35 @@ class JSONLexer:
         value = self.text[start_pos:self.pos]
         self.advance()
         return Token('STRING', value)
+
+    def read_number(self):
+        start_pos = self.pos
+        while self.current_char.isdigit() or self.current_char == '.':
+            self.advance()
+        value = self.text[start_pos:self.pos]
+        return Token('NUMBER', float(value) if '.' in value else int(value))
+
+    def read_boolean(self):
+        start_pos = self.pos
+        while self.current_char.isalpha():
+            self.advance()
+        value = self.text[start_pos:self.pos]
+        if value == 'true':
+            return Token('BOOLEAN', True)
+        elif value == 'false':
+            return Token('BOOLEAN', False)
+        else:
+            self.error()
+
+    def read_null(self):
+        start_pos = self.pos
+        while self.current_char.isalpha():
+            self.advance()
+        value = self.text[start_pos:self.pos]
+        if value == 'null':
+            return Token('NULL')
+        else:
+            self.error()
 
     def skip_whitespace(self):
         while self.current_char and self.current_char.isspace():
@@ -124,6 +189,9 @@ class Token:
     def __init__(self, type, value=None):
         self.type = type
         self.value = value
+
+class JSONLexerError(Exception):
+    pass
 
 def read_json_file(file_path):
     try:
