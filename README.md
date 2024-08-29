@@ -16,7 +16,7 @@ This json-parser will be initially developed by `Python` and then by `C` later
 
 ## Getting Started
 This project can be accessed in two ways:
-* Through the [website]("https://example.com")
+* Through the [website]("http://markkimotho.github.io/json-parser/")
 * By accessing it using you local machine:
 - STEPS TO BE PROVIDED
 
