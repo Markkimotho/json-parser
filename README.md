@@ -1,34 +1,63 @@
-# `json-parser`
-
-JSON (which stands for JavaScript Object Notation) is a lightweight data-interchange format, which is widely used for transmitting data over the Internet. It is formally defined by the [RFC 4627](https://datatracker.ietf.org/doc/html/rfc4627) or there’s a simpler graphical representation [here](https://www.json.org/json-en.html)
+# JSON Parser
 
 ## Overview
-In this project, I will build a custom JSON parser.
 
-## Development
-This json-parser will be initially developed by `Python` and then by `C` later 
-
-## Usage
-`//TODO`
+The **JSON Parser** is a simple web application designed to parse JSON data. Users can either enter JSON data directly or upload a JSON file for parsing. The application provides a user-friendly interface to visualize and validate JSON structures.
 
 ## Features
-`//TODO`
 
-## Getting Started
-This project can be accessed in two ways:
-* Through the [website]("http://markkimotho.github.io/json-parser/")
-* By accessing it using you local machine:
-- STEPS TO BE PROVIDED
+- **Enter JSON Data**: Input JSON directly into a text area for immediate parsing.
+- **Upload JSON File**: Upload a JSON file to parse its contents.
+- **Error Handling**: The application provides feedback on parsing errors, making it easy to identify issues with the JSON data.
 
+## Technologies Used
 
-## Dependencies
-`//TODO`
+- **Flask**: A lightweight WSGI web application framework in Python.
+- **HTML/CSS**: For the front end of the application.
+- **JavaScript**: For interactivity and handling file uploads.
+- **Heroku**: Deployed on Heroku for easy access and sharing.
 
-## Contributions
-This is an **open project**, therefore **contributions are welcome**! If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request.
+## Installation
 
-## Acknowledgements
-`//TODO`
+To run this project locally, follow these steps:
 
-## Contact 
-For any inquiries or questions, you can reach out to [me](mailto:kimothomark93@gmail.com).
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/Markkimotho/json-parser.git
+   cd json-parser
+   ```
+
+2. **Set Up a Virtual Environment**:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+
+3. **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4. **Run the Application**:
+    ```bash
+    python app.py
+    ```
+
+5. **Access the App**: Open your web browser and go to http://127.0.0.1:5000/.
+
+## Usage
+1. **Enter JSON Data**: Paste your JSON data into the text area and click "Parse" to validate it.
+2. **Upload JSON File**: Click on the upload button to select a JSON file from your device. The app will parse the contents and display any errors or the parsed data.
+
+## Deployment
+This application is deployed on Heroku. You can access it at:
+[JSON Parser](https://json-parser-py-e1ec55614d20.herokuapp.com/)
+
+## Contributing
+Contributions are welcome! If you have suggestions for improvements or want to report issues, please open an issue or submit a pull request.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Acknowledgments
+Thanks to the [John Crickett](https://www.linkedin.com/in/johncrickett/) for the [JSON Parser Challenge](https://codingchallenges.fyi/challenges/challenge-json-parser)
