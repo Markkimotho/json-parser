@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Parser</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>JSON Parser</h1>
+        <form id="jsonForm">
+            <div class="form-group">
+                <label for="jsonData">Enter JSON Data:</label>
+                <textarea id="jsonData" name="jsonData" placeholder="e.g. {'key': 'value', 'nested': {'key': 'value'}}"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="jsonFile">Upload JSON File:</label>
+                <input type="file" id="jsonFile" name="jsonFile">
+            </div>
+            <input type="submit" value="Parse JSON">
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
