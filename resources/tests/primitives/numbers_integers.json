@@ -1,0 +1,8 @@
+{
+  "zero": 0,
+  "one": 1,
+  "positive": 42,
+  "negative": -100,
+  "large": 999999999,
+  "very_large": 9223372036854775807
+}

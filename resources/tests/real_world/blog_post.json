@@ -1,0 +1,45 @@
+{
+  "id": "post_001",
+  "title": "Getting Started with JSON",
+  "slug": "getting-started-with-json",
+  "author": {
+    "id": "usr_123",
+    "name": "Jane Doe",
+    "email": "jane@example.com"
+  },
+  "content": "JSON is a lightweight data interchange format that is easy for humans to read and write. This guide will help you understand JSON basics.",
+  "excerpt": "An introduction to JSON format and its uses",
+  "categories": ["tutorials", "json", "web-dev"],
+  "tags": ["json", "data", "format", "tutorial", "beginner-friendly"],
+  "published": true,
+  "featured": true,
+  "published_at": "2024-01-15T10:00:00Z",
+  "updated_at": "2024-03-20T15:30:00Z",
+  "meta": {
+    "description": "Learn JSON: a beginner's guide to data interchange format",
+    "keywords": "json, data format, tutorial",
+    "canonical": "https://example.com/blog/getting-started-with-json"
+  },
+  "comments": [
+    {
+      "id": "cmt_001",
+      "author": "John Smith",
+      "content": "Great article! Very helpful.",
+      "rating": 5,
+      "created_at": "2024-01-16T08:30:00Z"
+    },
+    {
+      "id": "cmt_002",
+      "author": "Sarah Jones",
+      "content": "Can you provide more examples?",
+      "rating": 4,
+      "created_at": "2024-01-17T14:15:00Z"
+    }
+  ],
+  "stats": {
+    "views": 1250,
+    "likes": 89,
+    "shares": 34,
+    "comments_count": 2
+  }
+}

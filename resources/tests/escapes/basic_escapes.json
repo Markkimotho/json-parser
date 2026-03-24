@@ -1,0 +1,10 @@
+{
+  "newline": "line1\nline2",
+  "tab": "col1\tcol2",
+  "carriage_return": "text\rmore",
+  "backspace": "text\bmore",
+  "form_feed": "text\fmore",
+  "quote": "He said \"Hello\"",
+  "backslash": "path\\to\\file",
+  "slash": "https://example.com/path"
+}

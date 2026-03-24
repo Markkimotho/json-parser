@@ -1,0 +1,9 @@
+{
+  "numbers": [1, 2, 3, 4, 5],
+  "strings": ["apple", "banana", "cherry"],
+  "booleans": [true, false, true],
+  "nulls": [null, null, null],
+  "mixed": [1, "two", 3.0, true, null],
+  "single_element": [42],
+  "empty": []
+}

@@ -3,24 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Parser</title>
+    <title>JSON Parser - Retro Terminal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>JSON Parser</h1>
-        <form id="jsonForm">
-            <div class="form-group">
-                <label for="jsonData">Enter JSON Data:</label>
-                <textarea id="jsonData" name="jsonData" placeholder="e.g. {'key': 'value', 'nested': {'key': 'value'}}"></textarea>
+    <div class="crt-frame">
+        <div class="crt-screen">
+            <!-- Header Terminal -->
+            <div class="terminal-header">
+                <div class="terminal-title">JSON PARSER v2.0</div>
+                <div class="terminal-info">Robust JSON Parsing Utility</div>
+                <hr class="terminal-divider">
             </div>
-            <div class="form-group">
-                <label for="jsonFile">Upload JSON File:</label>
-                <input type="file" id="jsonFile" name="jsonFile">
+
+            <!-- Main Content -->
+            <div class="terminal-content">
+                
+                <!-- Section 1: Input Methods -->
+                <div class="terminal-section">
+                    <div class="section-label">&gt; INPUT METHODS</div>
+                    
+                    <form id="jsonForm" class="json-form">
+                        <!-- Text Input -->
+                        <div class="form-input">
+                            <div class="input-label">
+                                <span class="prompt">$</span>
+                                <span class="label-text">Enter JSON Data:</span>
+                            </div>
+                            <textarea 
+                                id="jsonData" 
+                                name="jsonData" 
+                                class="json-textarea"
+                                placeholder="{ &quot;key&quot;: &quot;value&quot; }"
+                                spellcheck="false"></textarea>
+                        </div>
+
+                        <!-- File Upload -->
+                        <div class="form-input">
+                            <div class="input-label">
+                                <span class="prompt">$</span>
+                                <span class="label-text">Upload JSON File:</span>
+                            </div>
+                            <div class="file-input-wrapper">
+                                <input 
+                                    type="file" 
+                                    id="jsonFile" 
+                                    name="jsonFile" 
+                                    class="file-input"
+                                    accept=".json"
+                                >
+                                <label for="jsonFile" class="file-label">
+                                    [SELECT FILE]
+                                </label>
+                                <span id="fileName" class="file-name"></span>
+                            </div>
+                        </div>
+
+                        <!-- Parse Button -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-parse">
+                                > PARSE JSON
+                            </button>
+                            <button type="reset" class="btn-clear">
+                                < CLEAR
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Section 2: Output -->
+                <div class="terminal-section">
+                    <div class="section-label">&gt; PARSE RESULT</div>
+                    
+                    <div id="result" class="result-box">
+                        <div class="result-empty">
+                            <span class="blink">_</span> Waiting for input...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Info -->
+                <div class="terminal-section">
+                    <div class="section-label">&gt; FEATURES</div>
+                    <div class="features-grid">
+                        <div class="feature">
+                            <span class="feature-icon">*</span>
+                            <span>All JSON Types</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">*</span>
+                            <span>Unicode Support</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">*</span>
+                            <span>Error Detection</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">*</span>
+                            <span>Line/Col Info</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="terminal-footer">
+                    <hr class="terminal-divider">
+                    <div class="footer-text">
+                        Press CTRL+C to interrupt | Supports files up to 10MB
+                    </div>
+                </div>
+
             </div>
-            <input type="submit" value="Parse JSON">
-        </form>
-        <div id="result" class="result"></div>
+        </div>
+
+        <!-- CRT Scanlines Effect -->
+        <div class="scanlines"></div>
+
+        <!-- CRT Gloom Overlay -->
+        <div class="gloom"></div>
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>

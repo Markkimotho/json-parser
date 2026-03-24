@@ -1,0 +1,9 @@
+{
+  "positive_exponent": 1.5e10,
+  "negative_exponent": 1.5e-10,
+  "uppercase_e": 2.5E+5,
+  "uppercase_negative": 3.2E-4,
+  "int_exponent": 1e5,
+  "negative_int_exp": 1e-5,
+  "zero_exp": 0e10
+}

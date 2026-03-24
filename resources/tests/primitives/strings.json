@@ -1,0 +1,8 @@
+{
+  "empty": "",
+  "simple": "hello",
+  "with_spaces": "hello world",
+  "with_numbers": "text123",
+  "single_char": "a",
+  "long_string": "The quick brown fox jumps over the lazy dog"
+}

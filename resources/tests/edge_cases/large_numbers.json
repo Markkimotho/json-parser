@@ -1,0 +1,9 @@
+{
+  "max_int": 9223372036854775807,
+  "min_int": -9223372036854775808,
+  "large_float": 999999999999.999999999,
+  "small_float": 0.000000000001,
+  "zero": 0,
+  "negative_zero": -0,
+  "zero_with_exp": 0e10
+}

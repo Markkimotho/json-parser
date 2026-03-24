@@ -1,0 +1,8 @@
+{
+  "simple": 1.5,
+  "negative": -3.14159,
+  "very_small": 0.00001,
+  "precise": 123.456789,
+  "zero_point": 0.0,
+  "one_point": 1.0
+}

@@ -1,53 +1,513 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+/* ===================================
+   SIMPLE CLEAN THEME
+   JSON Parser v2.0
+   =================================== */
+
+:root {
+    --primary: #3b82f6;
+    --primary-light: #60a5fa;
+    --primary-dark: #1d4ed8;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --bg-primary: #f9fafb;
+    --bg-secondary: #f3f4f6;
+    --border: #e5e7eb;
+    --border-light: #f0f0f0;
+    --success: #06b6d4;
+    --error: #ef4444;
+    --shadow: rgba(0, 0, 0, 0.08);
+    --font-mono: 'Courier New', 'Courier', monospace;
+}
+
+* {
     margin: 0;
     padding: 0;
-}
-
-.container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #555;
-}
-
-textarea,
-input[type="file"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
     box-sizing: border-box;
 }
 
-input[type="submit"] {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
 }
+
+body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Main Container */
+.crt-frame {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px var(--shadow), 0 10px 30px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.crt-screen {
+    padding: 40px;
+    position: relative;
+    z-index: 1;
+    overflow: visible;
+    background: white;
+}
+
+/* Terminal Header */
+.terminal-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.terminal-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0;
+    margin-bottom: 8px;
+}
+
+.terminal-info {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+.terminal-divider {
+    display: none;
+}
+
+/* Terminal Content */
+.terminal-content {
+    min-height: auto;
+}
+
+/* Terminal Section */
+.terminal-section {
+    margin-bottom: 35px;
+}
+
+.section-label {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+/* Form Styles */
+.json-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-label {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.prompt {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.label-text {
+    color: var(--text-primary);
+}
+
+/* Textarea */
+.json-textarea {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    resize: vertical;
+    min-height: 120px;
+    max-height: 300px;
+    overflow-y: auto;
+    outline: none;
+    transition: all 0.2s ease;
+    box-shadow: none;
+}
+
+.json-textarea::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+.json-textarea:focus {
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.1);
+}
+
+/* File Input */
+.file-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.file-input-wrapper:hover {
+    border-color: var(--primary);
+    background: white;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-label {
+    padding: 8px 16px;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.file-label:hover {
+    background: var(--primary-dark);
+}
+
+.file-name {
+    font-size: 12px;
+    color: var(--text-secondary);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Buttons */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+button {
+    padding: 10px 20px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0;
+    text-transform: none;
+    outline: none;
+}
+
+.btn-parse {
+    background: var(--primary);
+    color: white;
+    flex: 1;
+}
+
+.btn-parse:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(45, 212, 191, 0.2);
+}
+
+.btn-parse:active {
+    transform: translateY(0);
+}
+
+.btn-clear {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    flex: 0.5;
+    border: 1px solid var(--border);
+}
+
+.btn-clear:hover {
+    background: var(--border);
+    border-color: var(--text-secondary);
+}
+
+.copy-btn {
+    background: var(--success);
+    color: white;
+    padding: 6px 14px;
+    font-size: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    background: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+}
+
+.copy-btn:active {
+    transform: translateY(0);
+}
+
+/* Result Box */
+.result-box {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    min-height: 120px;
+    max-height: 400px;
+    overflow-y: auto;
+    font-size: 12px;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: var(--font-mono);
+    box-shadow: none;
+}
+
+.result-empty {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+}
+
+.result-success {
+    color: #06b6d4;
+    font-weight: 500;
+}
+
+.result-success pre {
+    color: #06b6d4;
+    background: #f0fdff;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #cffafe;
+    overflow-x: auto;
+}
+
+.json-output {
+    margin-top: 15px;
+    border-top: 1px solid #e0e7ff;
+    padding-top: 15px;
+}
+
+.result-error {
+    color: #ef4444;
+    font-weight: 500;
+}
+
+.result-error-line {
+    margin: 5px 0;
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+/* Error Label */
+.error-label {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.error-detail {
+    color: #ef4444;
+    font-size: 11px;
+    margin: 5px 0;
+    opacity: 0.95;
+}
+
+/* Features Grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    padding: 10px 0;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-left: none;
+    color: white;
+    font-size: 12px;
+    background: var(--primary);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.feature:hover {
+    border-left-color: var(--primary);
+    background: var(--primary-dark);
+    transform: translateX(2px);
+}
+
+.feature-icon {
+    color: white;
+    font-weight: bold;
+}
+
+/* Terminal Footer */
+.terminal-footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.footer-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 0;
+}
+
+/* Animations */
+@keyframes blink {
+    0%, 49% {
+        opacity: 1;
+    }
+    50%, 100% {
+        opacity: 0;
+    }
+}
+
+.blink {
+    animation: blink 1s infinite;
+    color: var(--primary);
+}
+
+/* Scanlines Effect */
+.scanlines {
+    display: none;
+}
+
+/* Gloom Overlay */
+.gloom {
+    display: none;
+}
+
+/* Scrollbar Styling */
+.result-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+.result-box::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 4px;
+}
+
+.result-box::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+
+.result-box::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Textarea Scrollbar */
+.json-textarea::-webkit-scrollbar {
+    width: 8px;
+}
+
+.json-textarea::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 4px;
+}
+
+.json-textarea::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+
+.json-textarea::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .crt-frame {
+        border-radius: 8px;
+    }
+
+    .crt-screen {
+        padding: 20px;
+    }
+
+    .terminal-title {
+        font-size: 24px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-parse, .btn-clear {
+        flex: 1;
+    }
+}
+
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .json-textarea {
+        min-height: 100px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+    }
+
+    .crt-frame {
+        border: 1px solid #ccc;
+        box-shadow: none;
+    }
+
+    .scanlines,
+    .gloom {
+        display: none;
+    }
+}
+
 
 input[type="submit"]:hover {
     background-color: #0056b3;

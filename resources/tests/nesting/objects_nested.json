@@ -1,0 +1,23 @@
+{
+  "level1": {
+    "level2": {
+      "level3": {
+        "level4": {
+          "message": "deeply nested"
+        }
+      }
+    }
+  },
+  "config": {
+    "database": {
+      "primary": {
+        "host": "db1.example.com",
+        "port": 5432
+      },
+      "secondary": {
+        "host": "db2.example.com",
+        "port": 5433
+      }
+    }
+  }
+}

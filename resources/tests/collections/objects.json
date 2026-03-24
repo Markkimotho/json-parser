@@ -1,0 +1,17 @@
+{
+  "person": {
+    "name": "Alice",
+    "age": 30,
+    "email": "alice@example.com"
+  },
+  "company": {
+    "name": "TechCorp",
+    "employees": 500,
+    "founded": 2010
+  },
+  "product": {
+    "id": "PROD-001",
+    "title": "Widget",
+    "price": 29.99
+  }
+}

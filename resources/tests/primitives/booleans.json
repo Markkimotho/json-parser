@@ -1,0 +1,5 @@
+{
+  "true_value": true,
+  "false_value": false,
+  "all_bools": [true, false, true, false]
+}

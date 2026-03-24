@@ -1,0 +1,8 @@
+{
+  "spaces": "   ",
+  "symbols": "!@#$%^&*()",
+  "math": "1+1=2, 2*2=4, 3-1=2",
+  "punctuation": "Hello! How are you? I'm fine, thanks.",
+  "mixed": "Test_123-ABC.xyz@example.com",
+  "multiline_escape": "Line1\nLine2\nLine3\nLine4"
+}

@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Alice",
+      "posts": [
+        {
+          "title": "First Post",
+          "content": "Hello World",
+          "tags": ["intro", "hello"]
+        },
+        {
+          "title": "Second Post",
+          "content": "JSON is great",
+          "tags": ["json", "tutorial"]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Bob",
+      "posts": [
+        {
+          "title": "My Blog",
+          "content": "Testing JSON parser",
+          "tags": ["test"]
+        }
+      ]
+    }
+  ]
+}

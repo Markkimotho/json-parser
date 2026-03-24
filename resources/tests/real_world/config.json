@@ -1,0 +1,51 @@
+{
+  "version": "2.0.1",
+  "app": {
+    "name": "JSON Parser",
+    "description": "A robust and scalable JSON parser",
+    "debug": false,
+    "port": 5001,
+    "host": "0.0.0.0",
+    "environment": "production"
+  },
+  "database": {
+    "primary": {
+      "host": "db-primary.example.com",
+      "port": 5432,
+      "database": "jsonparser",
+      "pool_size": 20,
+      "ssl": true
+    },
+    "replica": {
+      "host": "db-replica.example.com",
+      "port": 5432,
+      "database": "jsonparser",
+      "pool_size": 10,
+      "ssl": true
+    }
+  },
+  "features": {
+    "authentication": true,
+    "two_factor_auth": true,
+    "rate_limiting": true,
+    "caching": {
+      "enabled": true,
+      "type": "redis",
+      "ttl": 3600
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "json",
+    "outputs": ["console", "file"],
+    "file_path": "/var/log/app.log",
+    "file_size_mb": 100,
+    "backup_count": 5
+  },
+  "security": {
+    "cors_enabled": true,
+    "cors_origins": ["https://example.com", "https://app.example.com"],
+    "csrf_protection": true,
+    "max_upload_size_mb": 10
+  }
+}
