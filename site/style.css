@@ -187,6 +187,22 @@ h1 {
   padding: 16px 0 18px;
   border-top: 1px solid #fff;
 }
+.parser-mode {
+  align-items: baseline;
+  background: #f5f5f0;
+  border: 2px inset #999;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.76rem;
+  gap: 5px 16px;
+  justify-content: space-between;
+  line-height: 1.45;
+  padding: 10px 12px;
+}
+.parser-mode a {
+  color: #1e4d84;
+  font-weight: bold;
+}
 .toolbar button,
 .file-label {
   display: inline-block;

@@ -1,12 +1,25 @@
 # JSON Parser
 
-The [browser workbench](https://markkimotho.github.io/json-parser/) validates, formats and minifies JSON without uploading it. It uses the browser's native JSON parser. The original Flask interface and hand-written Python lexer/parser remain in this repository; the browser build does not run the Python parser.
+The [public browser workbench](https://markkimotho.github.io/json-parser/) validates, formats and minifies JSON without uploading it. GitHub Pages uses the browser's native parser. The Python edition serves the same interface through Flask and sends input to the original hand-written lexer/parser.
 
-Run the browser edition locally with `python3 -m http.server 8000 --directory site`, then open `http://127.0.0.1:8000/`. Run the Python tests with `python3 -m unittest discover -s resources/tests` and browser logic tests with `node --test site/logic.test.js`.
+## Python version
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
+python3 app.py
+```
+
+Open [http://127.0.0.1:5001/python/](http://127.0.0.1:5001/python/). This uses `Lexer` and `Parser` from `app.py` through the `/parse-json` endpoint; the page marks the Python parser as active. Inputs are sent to the Flask process on your machine. The older terminal interface remains at `/terminal/`.
+
+The repo also includes a `render.yaml` for a free Render web service. Connect this repository to Render as a Blueprint to deploy the same Python workbench. Verify the resulting `/python/` page and `/parse-json` endpoint before publishing its URL. A hosted Python edition sends submitted JSON to that server; use the browser edition if you need to keep input on your device. Render's free service may take time to wake after inactivity.
+
+To run the browser-only edition locally: `python3 -m http.server 8000 --directory site`, then open `http://127.0.0.1:8000/`. Run the Python tests with `python3 -m unittest discover -s resources/tests` and browser logic tests with `node --test site/logic.test.js`.
 
 ## Overview
 
-A hand-written Python JSON lexer/parser with a Flask interface and 38 local tests. The separate browser workbench uses `JSON.parse` for a static, no-upload demo. Neither interface is presented as a security boundary for untrusted data.
+A hand-written Python JSON lexer/parser with a Flask interface and local tests. The separate browser workbench uses `JSON.parse` for a static, no-upload demo. Neither interface is presented as a security boundary for untrusted data.
 
 ## Key Features
 
@@ -42,8 +55,8 @@ A hand-written Python JSON lexer/parser with a Flask interface and 38 local test
 - **Flask**: Web application framework
 - **HTML/CSS**: User interface
 - **JavaScript**: Client-side interactivity
-- **pytest**: Comprehensive test suite (38+ test cases)
-- **Heroku**: Deployment platform
+- **unittest**: Python parser and Flask route tests
+- **Gunicorn / Render**: Production server and optional deployment configuration
 
 ## Installation
 
@@ -71,7 +84,7 @@ To run this project locally, follow these steps:
     python app.py
     ```
 
-5. **Access the App**: Open your web browser and navigate to http://127.0.0.1:5001/
+5. **Access the App**: Open your web browser and navigate to http://127.0.0.1:5001/python/
 
 ## Usage
 
@@ -215,24 +228,13 @@ except JSONParseError as e:
 Run the comprehensive test suite:
 
 ```bash
-# Run all tests with verbose output
-python -m pytest tests.py -v
-
-# Run specific test class
-python -m pytest tests.py::TestLexer -v
-
-# Run with coverage
-python -m pytest tests.py --cov=app
+python3 -m unittest discover -s resources/tests
+node --test site/logic.test.js
 ```
 
 ### Test Coverage
 
-The test suite includes **38+ test cases** covering:
-- **13 Lexer tests**: Tokenization, escape sequences, unicode, numbers
-- **21 Parser tests**: Object/array parsing, nesting, validation, error handling  
-- **6 Complex scenario tests**: Real-world JSON, unicode content, whitespace
-
-All tests pass: [OK] 38/38
+The Python suite covers lexing, parsing, file input, and the Flask workbench. The browser suite covers formatting and invalid input.
 
 ## Configuration
 
@@ -263,15 +265,7 @@ JSONParseError at line 1, column 1: Leading zeros not allowed in numbers
 
 ## Deployment
 
-This application is deployed on Heroku and can be accessed at:
-[JSON Parser](https://json-parser-py-e1ec55614d20.herokuapp.com/)
-
-### Deploy Your Own
-```bash
-# Using Heroku CLI
-heroku create your-app-name
-git push heroku main
-```
+Only the browser edition is currently deployed on GitHub Pages. The previous Heroku app URL is no longer live. `render.yaml` prepares a free Python web service, but its public URL should be linked only after deployment is verified.
 
 ## Architecture
 

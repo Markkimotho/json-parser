@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
       name="description"
-      content="Inspect, validate and format JSON in your browser."
+      content="Inspect, validate and format JSON with the browser or original Python parser."
     />
     <title>JSON Workbench</title>
     <link rel="stylesheet" href="style.css" />
@@ -30,14 +30,22 @@
           <header>
             <div class="app-icon" aria-hidden="true">{<br />&nbsp;}</div>
             <div>
-              <p class="eyebrow">Version 1.0 / Browser edition</p>
+              <p class="eyebrow">Version 1.0 / Two ways to parse</p>
               <h1>JSON Workbench</h1>
               <p>
-                Open, validate, and format JSON right here. Files stay on your
-                computer.
+                Open, validate, and format JSON. The active parser is shown
+                below.
               </p>
             </div>
           </header>
+          <div class="parser-mode">
+            <span id="mode-label"
+              >Browser parser active · files stay on this device.</span
+            >
+            <a href="https://github.com/Markkimotho/json-parser#python-version"
+              >Use the Python parser ↗</a
+            >
+          </div>
           <div class="toolbar" aria-label="JSON tools">
             <label for="file" class="file-label"
               >Open file…<input
@@ -73,14 +81,14 @@ Your formatted JSON appears here.</pre
           <div class="status-bar">
             <span class="status-light" aria-hidden="true"></span>
             <p id="status" role="status" aria-live="polite">Ready.</p>
-            <span class="status-end">LOCAL / NO UPLOADS</span>
+            <span id="mode-short" class="status-end">BROWSER / NO UPLOADS</span>
           </div>
         </div>
       </section>
       <p class="footnote">
-        This browser edition uses the built-in JavaScript JSON parser. The
-        repository also contains the original Python lexer/parser and its
-        38-test suite.
+        The public browser demo uses JavaScript's native parser. The Python
+        edition runs the repository's lexer/parser through Flask; its setup
+        instructions are linked above.
       </p>
     </main>
     <script type="module" src="app.js"></script>

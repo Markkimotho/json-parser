@@ -1,6 +1,8 @@
 import os
-from flask import Flask, render_template, request, jsonify # type: ignore
+from flask import Flask, render_template, request, jsonify, redirect, send_from_directory, url_for, abort  # type: ignore
+from werkzeug.exceptions import RequestEntityTooLarge
 import json
+import math
 from typing import Any, Tuple, Dict, List, Optional
 import re
 
@@ -8,6 +10,7 @@ app = Flask(__name__)
 
 # Configuration constants
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+app.config['MAX_CONTENT_LENGTH'] = MAX_FILE_SIZE + 1024 * 1024  # multipart overhead
 MAX_RECURSION_DEPTH = 1000
 MIN_NUMBER = -9223372036854775808  # 64-bit min
 MAX_NUMBER = 9223372036854775807   # 64-bit max
@@ -402,6 +405,9 @@ class Parser:
                     value = int(num_str)
                 else:
                     value = float(num_str)
+
+                if isinstance(value, float) and not math.isfinite(value):
+                    raise JSONParseError(f"Number out of range: {num_str}", self.lexer.line, self.lexer.column)
                 
                 # Validate against reasonable limits
                 if isinstance(value, int) and (value < MIN_NUMBER or value > MAX_NUMBER):
@@ -416,7 +422,25 @@ class Parser:
 # Route for the home page
 @app.route('/')
 def index():
+    return redirect(url_for('python_workbench'))
+
+@app.route('/python/')
+def python_workbench():
+    return send_from_directory('site', 'index.html')
+
+@app.route('/python/<path:filename>')
+def python_assets(filename):
+    if filename not in {'index.html', 'app.js', 'logic.js', 'style.css'}:
+        abort(404)
+    return send_from_directory('site', filename)
+
+@app.route('/terminal/')
+def terminal():
     return render_template('index.html')
+
+@app.errorhandler(RequestEntityTooLarge)
+def too_large(_error):
+    return jsonify(error='JSON input exceeds the 10MB limit', valid=False), 413
 
 # Route for parsing JSON
 @app.route('/parse-json', methods=['POST'])
@@ -425,8 +449,6 @@ def parse_json():
     try:
         json_data = None
         source = None
-        
-        print(f"[PARSE] Form keys: {list(request.form.keys())}, File keys: {list(request.files.keys())}")
         
         # Get JSON from form data
         if 'jsonData' in request.form:
@@ -440,13 +462,9 @@ def parse_json():
             if not json_file.filename:
                 return jsonify(error="No file selected"), 400
             
-            print(f"[PARSE] File: {json_file.filename}")
-            
             # Read file content first, then check size
             file_content = json_file.read()
             file_size = len(file_content)
-            
-            print(f"[PARSE] File size: {file_size} bytes")
             
             if file_size == 0:
                 return jsonify(error="File is empty"), 400
@@ -458,19 +476,17 @@ def parse_json():
             try:
                 json_data = file_content.decode('utf-8')
                 source = "file"
-                print(f"[PARSE] Decoded {len(json_data)} chars from file")
             except UnicodeDecodeError:
                 return jsonify(error="File is not valid UTF-8 encoded"), 400
         else:
-            print(f"[PARSE] ERROR: No jsonData or jsonFile found")
             return jsonify(error="No JSON data or file provided"), 400
         
         # Validate input
         if not json_data or not json_data.strip():
-            print(f"[PARSE] ERROR: json_data is empty")
             return jsonify(error="JSON input is empty"), 400
-        
-        print(f"[PARSE] Parsing {len(json_data)} chars from {source}")
+
+        if len(json_data.encode('utf-8')) > MAX_FILE_SIZE:
+            return jsonify(error="JSON input exceeds the 10MB limit", valid=False), 413
         
         # Parse JSON
         lexer = Lexer(json_data.strip())
@@ -478,26 +494,27 @@ def parse_json():
         
         parsed_data = parser.parse()
         
-        print(f"[PARSE] Success!")
-        
         return jsonify(
             result=parsed_data,
+            formatted=json.dumps(parsed_data, indent=2, ensure_ascii=True, allow_nan=False),
+            minified=json.dumps(parsed_data, separators=(',', ':'), ensure_ascii=True, allow_nan=False),
             source=source,
             valid=True
         )
     
     except JSONParseError as e:
-        print(f"[PARSE] JSONParseError: {e.message}")
         return jsonify(
             error=e.message,
             line=e.line,
             column=e.column,
             valid=False
         ), 400
-    except Exception as e:
-        print(f"[PARSE] Exception: {str(e)}")
-        return jsonify(error=f"Unexpected error: {str(e)}", valid=False), 500
+    except RequestEntityTooLarge:
+        raise
+    except Exception:
+        app.logger.exception("Could not process JSON")
+        return jsonify(error="Could not process JSON", valid=False), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host=os.environ.get('HOST', '127.0.0.1'), port=port)
