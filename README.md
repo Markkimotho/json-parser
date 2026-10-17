@@ -1,6 +1,8 @@
 # JSON Parser
 
-Choose the [browser workbench](https://markkimotho.github.io/json-parser/) to validate, format, and minify JSON without uploading it, the [hosted Python workbench](https://json-parser-python.onrender.com/python/) to use this repository's hand-written lexer/parser through Flask, or the [Developer Engine](https://json-parser-python.onrender.com/engine/) to inspect tokens, the AST and a step-by-step parser trace, heal damaged JSON, generate TypeScript/Pydantic/Go types, audit for security issues, run JSONPath queries and compress JSON for LLM prompts.
+**[Open the JSON Developer Engine](https://json-parser-python.onrender.com/engine/)**: inspect tokens, the AST and a step-by-step parser trace, heal damaged JSON, generate TypeScript/Pydantic/Go types, audit for security issues, run JSONPath queries and compress JSON for LLM prompts, all on this repository's hand-written lexer and recursive-descent parser.
+
+Also available: the [browser workbench](https://markkimotho.github.io/json-parser/) (validate and format without uploading anything) and the [Python workbench](https://json-parser-python.onrender.com/python/).
 
 ## Python version
 
