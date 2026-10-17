@@ -6,7 +6,7 @@ Run the browser edition locally with `python3 -m http.server 8000 --directory si
 
 ## Overview
 
-A production-grade **JSON Parser** with comprehensive support for all JSON parsing use cases. Built with robustness, scalability, and error handling as first-class concerns. Features a web interface and a powerful underlying parser implementation with extensive test coverage.
+A hand-written Python JSON lexer/parser with a Flask interface and 38 local tests. The separate browser workbench uses `JSON.parse` for a static, no-upload demo. Neither interface is presented as a security boundary for untrusted data.
 
 ## Key Features
 
