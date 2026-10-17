@@ -13,12 +13,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install -r requirements.txt
-      - run: python -m unittest discover -s resources/tests
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m coverage run --branch --source=engines,app -m unittest discover -s resources/tests
+      - run: python -m coverage report --fail-under=100
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test site/logic.test.js
+      - run: node --test site/logic.test.js static/engine/lib.test.js
+      - run: python evals/run_evals.py healing compression
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

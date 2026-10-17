@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Order",
+  "description": "A customer order",
+  "type": "object",
+  "required": [
+    "id",
+    "status",
+    "items"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "open",
+        "paid",
+        null
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/LineItem"
+      }
+    },
+    "customer": {
+      "$ref": "#/$defs/Customer"
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "parent": {
+      "$ref": "#"
+    }
+  },
+  "$defs": {
+    "LineItem": {
+      "type": "object",
+      "required": [
+        "sku"
+      ],
+      "properties": {
+        "sku": {
+          "type": "string"
+        },
+        "qty": {
+          "type": "integer"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LineItem"
+          }
+        }
+      }
+    },
+    "Customer": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        {
+          "properties": {
+            "vip": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

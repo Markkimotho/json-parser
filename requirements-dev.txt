@@ -1,0 +1,5 @@
+-r requirements.txt
+# Gate tests execute generated Pydantic models when pydantic is present.
+pydantic>=2.7,<3
+# Coverage for `python -m coverage run --branch --source=engines,app -m unittest discover -s resources/tests`.
+coverage>=7.6

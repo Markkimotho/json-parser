@@ -327,3 +327,18 @@ To add new test files:
 **Last Updated**: March 24, 2026  
 **Total Files**: 38 new + 9 legacy = 47 files  
 **Coverage**: Comprehensive (primitives, collections, escapes, nesting, errors, edge cases, real-world)
+
+## Engine test modules
+
+| Module | Covers |
+|---|---|
+| `tests.py` | Original lexer/parser suite (unchanged) |
+| `test_json_files.py` | Runs every fixture in this directory through the parser |
+| `test_core_instrumentation.py` | Token capture, AST invariants, execution trace, duplicate recording, observers, strictness |
+| `test_healing.py` | Every repair kind, audit trail, unhealable input, damage-and-heal generalization over all fixtures |
+| `test_types.py` | Type IR, sample and schema inference, TypeScript/Pydantic/Go rendering, Pydantic execution, gofmt |
+| `test_auditor.py` | All six security/interoperability checks and their thresholds |
+| `test_query.py` | JSONPath selectors, filters, functions, RFC 9535 semantics, errors |
+| `test_compressor.py` | Compact format grammar, exact round trips (fixtures + 400 random documents), decoder errors |
+| `test_documents.py` | Parsed-document cache |
+| `test_api.py` | Every Flask route, input mode, limit and error path |

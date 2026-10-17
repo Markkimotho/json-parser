@@ -6,4 +6,8 @@ __pycache__/
 *.pyd
 *.db
 *.sqlite3
-*.log
+*.log.venv/
+.DS_Store
+.coverage
+htmlcov/
+evals/report.json

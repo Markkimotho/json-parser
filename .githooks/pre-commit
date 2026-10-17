@@ -1,0 +1,11 @@
+#!/bin/sh
+# Gate tests: deterministic, local, under two seconds. Enable with:
+#   git config core.hooksPath .githooks
+set -e
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+PYTHON="${PYTHON:-$( [ -x .venv/bin/python ] && echo .venv/bin/python || echo python3 )}"
+"$PYTHON" -m unittest discover -s resources/tests -q
+if command -v node >/dev/null 2>&1; then
+  node --test site/logic.test.js static/engine/lib.test.js >/dev/null
+fi

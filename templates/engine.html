@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="Parse, visualize, heal, type, audit, query and compress JSON with a hand-written Python parser." />
+    <title>JSON Developer Engine</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='engine/favicon.svg') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='engine/engine.css') }}" />
+    <script>
+      try {
+        const saved = localStorage.getItem("jde-theme");
+        if (saved) document.documentElement.dataset.theme = saved;
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">{ }</span>
+        <div>
+          <strong>JSON Developer Engine</strong>
+          <span class="brand-sub">hand-written lexer · recursive-descent parser · Python</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span id="healed-chip" class="chip chip-heal" hidden>HEALED</span>
+        <span id="status-badge" class="badge" data-status="READY" role="status" aria-live="polite">READY</span>
+        <a class="toplink" href="/python/">Workbench</a>
+        <a class="toplink" href="https://github.com/Markkimotho/json-parser">Source ↗</a>
+        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle colour theme">◐</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="pane pane-input" aria-label="Source document">
+        <div class="pane-head">
+          <span class="pane-title">SOURCE</span>
+          <span id="doc-name" class="muted">untitled.json</span>
+        </div>
+        <div class="toolbar">
+          <label class="btn" for="file-input">Open file<input id="file-input" type="file" accept=".json,.jsonc,.json5,.txt,application/json" /></label>
+          <select id="sample-select" aria-label="Load a sample document">
+            <option value="">Samples…</option>
+            <option value="api">API response</option>
+            <option value="broken">Broken JSON (healing)</option>
+            <option value="risky">Risky payload (audit)</option>
+            <option value="schema">JSON Schema (types)</option>
+            <option value="bookstore">Bookstore (JSONPath)</option>
+          </select>
+          <button id="btn-prettify" class="btn" type="button">Prettify</button>
+          <button id="btn-minify" class="btn" type="button">Minify</button>
+          <label class="toggle" title="Heal damaged JSON automatically when the strict parser rejects it">
+            <input id="opt-lenient" type="checkbox" checked /> Lenient
+          </label>
+          <label class="toggle" title="Recompile while you type (documents under 200 KB)">
+            <input id="opt-live" type="checkbox" checked /> Live
+          </label>
+        </div>
+        <div id="editor-wrap" class="editor-wrap">
+          <pre id="gutter" class="gutter" aria-hidden="true">1</pre>
+          <textarea id="editor" spellcheck="false" wrap="off" autocomplete="off" autocapitalize="off"
+            aria-label="JSON source" placeholder='Paste JSON, drop a file, or pick a sample. Damaged JSON is fine with Lenient on.'></textarea>
+          <div id="drop-overlay" class="drop-overlay" hidden>Drop a JSON file to open it</div>
+        </div>
+        <div id="error-banner" class="error-banner" role="alert" hidden></div>
+        <div class="pane-foot">
+          <span id="cursor-pos">Ln 1, Col 1</span>
+          <span id="doc-bytes">0 B</span>
+          <span id="parse-meta" class="muted"></span>
+          <button id="btn-compile" class="btn btn-primary" type="button">Compile <kbd>⌘↵</kbd></button>
+        </div>
+      </section>
+
+      <section class="pane pane-output" aria-label="Analysis">
+        <div class="tabs" role="tablist" aria-label="Analysis views">
+          <button role="tab" id="tab-ast" aria-controls="panel-ast" aria-selected="true" data-tab="ast">AST</button>
+          <button role="tab" id="tab-trace" aria-controls="panel-trace" aria-selected="false" data-tab="trace" tabindex="-1">Tokens &amp; Tracer</button>
+          <button role="tab" id="tab-fuzzy" aria-controls="panel-fuzzy" aria-selected="false" data-tab="fuzzy" tabindex="-1">Fuzzy Logs <span id="fuzzy-count" class="count" hidden></span></button>
+          <button role="tab" id="tab-polyglot" aria-controls="panel-polyglot" aria-selected="false" data-tab="polyglot" tabindex="-1">Polyglot</button>
+          <button role="tab" id="tab-audit" aria-controls="panel-audit" aria-selected="false" data-tab="audit" tabindex="-1">Audit <span id="audit-count" class="count" hidden></span></button>
+          <button role="tab" id="tab-jsonpath" aria-controls="panel-jsonpath" aria-selected="false" data-tab="jsonpath" tabindex="-1">JSONPath</button>
+          <button role="tab" id="tab-compress" aria-controls="panel-compress" aria-selected="false" data-tab="compress" tabindex="-1">LLM Compress</button>
+        </div>
+
+        <div class="panels">
+          <article id="panel-ast" class="panel" role="tabpanel" aria-labelledby="tab-ast">
+            <div class="panel-bar">
+              <span id="ast-meta" class="muted">Compile a document to see its syntax tree.</span>
+              <span class="spacer"></span>
+              <button id="ast-expand" class="btn btn-small" type="button">Expand all</button>
+              <button id="ast-collapse" class="btn btn-small" type="button">Collapse</button>
+              <button id="ast-copy" class="btn btn-small" type="button">Copy AST JSON</button>
+            </div>
+            <div id="ast-tree" class="tree" role="tree" aria-label="Abstract syntax tree"></div>
+          </article>
+
+          <article id="panel-trace" class="panel" role="tabpanel" aria-labelledby="tab-trace" hidden>
+            <div class="panel-bar tracer-controls">
+              <button id="trace-reset" class="btn btn-small" type="button" title="Back to the first step">⏮ Reset</button>
+              <button id="trace-back" class="btn btn-small" type="button" title="Previous step (←)">◀ Back</button>
+              <button id="trace-step" class="btn btn-small btn-primary" type="button" title="Next step (→)">Step ▶</button>
+              <button id="trace-play" class="btn btn-small" type="button">▶ Play</button>
+              <label class="speed">Speed <input id="trace-speed" type="range" min="1" max="60" value="12" /></label>
+              <span class="spacer"></span>
+              <span id="trace-counter" class="mono muted">0 / 0</span>
+            </div>
+            <input id="trace-scrub" class="scrub" type="range" min="0" max="0" value="0" aria-label="Trace position" />
+            <div class="tracer-grid">
+              <div class="card">
+                <h3>Current step</h3>
+                <div id="trace-event" class="trace-event muted">No trace yet.</div>
+                <h3>Call stack</h3>
+                <ol id="trace-stack" class="stack"></ol>
+              </div>
+              <div class="card">
+                <h3>Source pointer <span id="trace-pos" class="muted mono"></span></h3>
+                <pre id="trace-source" class="source-window"></pre>
+              </div>
+            </div>
+            <h3 class="section-title">Token stream <span id="token-meta" class="muted"></span></h3>
+            <div id="token-stream" class="token-stream" role="list"></div>
+          </article>
+
+          <article id="panel-fuzzy" class="panel" role="tabpanel" aria-labelledby="tab-fuzzy" hidden>
+            <div class="panel-bar">
+              <span id="fuzzy-summary" class="muted">Lenient healing has not been needed yet.</span>
+              <span class="spacer"></span>
+              <button id="fuzzy-heal" class="btn btn-small" type="button">Heal editor now</button>
+              <button id="fuzzy-apply" class="btn btn-small btn-primary" type="button" disabled>Apply healed JSON</button>
+            </div>
+            <table class="log-table" aria-label="Repairs">
+              <thead><tr><th>Repair</th><th>What changed</th><th>Where</th><th>Before → After</th></tr></thead>
+              <tbody id="fuzzy-log"></tbody>
+            </table>
+            <h3 class="section-title">Diff <span class="muted">original → healed</span></h3>
+            <pre id="fuzzy-diff" class="diff"></pre>
+          </article>
+
+          <article id="panel-polyglot" class="panel" role="tabpanel" aria-labelledby="tab-polyglot" hidden>
+            <div class="panel-bar">
+              <label>Root <input id="poly-root" class="input" value="RootObject" maxlength="64" spellcheck="false" /></label>
+              <label>Input
+                <select id="poly-mode">
+                  <option value="auto">Auto-detect</option>
+                  <option value="sample">Sample document</option>
+                  <option value="schema">JSON Schema</option>
+                </select>
+              </label>
+              <span id="poly-meta" class="muted"></span>
+            </div>
+            <div class="subtabs" role="tablist" aria-label="Target language">
+              <button role="tab" data-lang="typescript" aria-selected="true">TypeScript</button>
+              <button role="tab" data-lang="pydantic" aria-selected="false">Pydantic v2</button>
+              <button role="tab" data-lang="go" aria-selected="false">Go</button>
+              <span class="spacer"></span>
+              <button id="poly-copy" class="btn btn-small" type="button">Copy</button>
+            </div>
+            <pre id="poly-code" class="code" tabindex="0"></pre>
+          </article>
+
+          <article id="panel-audit" class="panel" role="tabpanel" aria-labelledby="tab-audit" hidden>
+            <div class="audit-head">
+              <span id="audit-badge" class="badge badge-large" data-status="READY">READY</span>
+              <div>
+                <div id="audit-summary">Compile a document to audit it.</div>
+                <div id="audit-stats" class="muted mono"></div>
+              </div>
+            </div>
+            <ul id="audit-checks" class="checks"></ul>
+          </article>
+
+          <article id="panel-jsonpath" class="panel panel-terminal" role="tabpanel" aria-labelledby="tab-jsonpath" hidden>
+            <div id="jp-examples" class="examples" aria-label="Example queries"></div>
+            <div id="jp-output" class="terminal" role="log" aria-live="polite"></div>
+            <form id="jp-form" class="terminal-input" autocomplete="off">
+              <label for="jp-input" class="prompt">jsonpath&gt;</label>
+              <input id="jp-input" spellcheck="false" placeholder="$.users[0].metadata.active   (help · clear · ↑ history)" />
+            </form>
+          </article>
+
+          <article id="panel-compress" class="panel" role="tabpanel" aria-labelledby="tab-compress" hidden>
+            <div class="panel-bar">
+              <div class="segmented" role="radiogroup" aria-label="Output format">
+                <button type="button" role="radio" aria-checked="true" data-mode="compact">LLM compact</button>
+                <button type="button" role="radio" aria-checked="false" data-mode="minified">Minified JSON</button>
+              </div>
+              <span class="spacer"></span>
+              <button id="cmp-copy" class="btn btn-small" type="button">Copy</button>
+            </div>
+            <div id="cmp-stats" class="stats"></div>
+            <p class="note muted">Token counts are estimates (mean error ≈7% against the cl100k and o200k tokenizers). Compact output decodes back to the identical JSON value.</p>
+            <pre id="cmp-output" class="code" tabindex="0"></pre>
+          </article>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="{{ url_for('static', filename='engine/engine.js') }}"></script>
+  </body>
+</html>

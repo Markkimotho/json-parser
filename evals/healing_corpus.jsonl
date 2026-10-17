@@ -1,0 +1,27 @@
+{"category": "llm-output", "input": "Sure! Here is the JSON you asked for:\n```json\n{\n  \"name\": \"Ada\",\n  \"skills\": [\"math\", \"poetry\"]\n}\n```\nLet me know if you need anything else.", "expected": {"name": "Ada", "skills": ["math", "poetry"]}}
+{"category": "llm-output", "input": "```\n[{\"id\": 1}, {\"id\": 2}]\n```", "expected": [{"id": 1}, {"id": 2}]}
+{"category": "llm-output", "input": "Output:\n{\"answer\": 42, \"confidence\": 0.93}", "expected": {"answer": 42, "confidence": 0.93}}
+{"category": "llm-truncated", "input": "{\"items\": [{\"id\": 1, \"tags\": [\"a\", \"b\"]}, {\"id\": 2, \"tags\": [\"c\"", "expected": {"items": [{"id": 1, "tags": ["a", "b"]}, {"id": 2, "tags": ["c"]}]}}
+{"category": "llm-truncated", "input": "{\"summary\": \"The quick brown fox jumps", "expected": {"summary": "The quick brown fox jumps"}}
+{"category": "llm-truncated", "input": "{\"done\": tr", "expected": {"done": true}}
+{"category": "llm-truncated", "input": "[1, 2, 3,", "expected": [1, 2, 3]}
+{"category": "llm-truncated", "input": "{\"a\": {\"b\": ", "expected": {"a": {"b": null}}}
+{"category": "python-repr", "input": "{'name': 'Ada', 'active': True, 'manager': None, 'scores': [1, 2.5]}", "expected": {"name": "Ada", "active": true, "manager": null, "scores": [1, 2.5]}}
+{"category": "python-repr", "input": "[{'k': 'it\\'s'}, {'k': \"say \\\"hi\\\"\"}]", "expected": [{"k": "it's"}, {"k": "say \"hi\""}]}
+{"category": "js-literal", "input": "{name: \"Ada\", tags: ['x', 'y',], nested: {deep: true,},}", "expected": {"name": "Ada", "tags": ["x", "y"], "nested": {"deep": true}}}
+{"category": "js-literal", "input": "{ratio: .5, count: +3, hex: 0xFF, big: 1e3, missing: undefined, inf: Infinity}", "expected": {"ratio": 0.5, "count": 3, "hex": 255, "big": 1000.0, "missing": null, "inf": null}}
+{"category": "jsonc-config", "input": "{\n  // editor settings\n  \"tabSize\": 2, /* spaces */\n  \"rulers\": [80, 120,],\n}", "expected": {"tabSize": 2, "rulers": [80, 120]}}
+{"category": "jsonc-config", "input": "# comment\n{\"a\": 1 # trailing\n}", "expected": {"a": 1}}
+{"category": "hand-edited", "input": "{\"a\": 1\n\"b\": 2\n\"c\": [1 2 3]}", "expected": {"a": 1, "b": 2, "c": [1, 2, 3]}}
+{"category": "hand-edited", "input": "{\"user\" \"ada\", \"id\" 7}", "expected": {"user": "ada", "id": 7}}
+{"category": "hand-edited", "input": "{\"a\": 1,, \"b\": 2,}", "expected": {"a": 1, "b": 2}}
+{"category": "hand-edited", "input": "[\"one\" \"two\"]", "expected": ["one", "two"]}
+{"category": "hand-edited", "input": "{\"path\": \"C:\\Program Files\\App\"}", "expected": {"path": "C:\\Program Files\\App"}}
+{"category": "hand-edited", "input": "{\"note\": \"line one\nline two\"}", "expected": {"note": "line one\nline two"}}
+{"category": "brackets", "input": "{\"a\": [1, 2}", "expected": {"a": [1, 2]}}
+{"category": "brackets", "input": "[{\"a\": 1], {\"b\": 2}]", "expected": [{"a": 1}, {"b": 2}]}
+{"category": "word-processor", "input": "{“name”: “Ada”, “city”: “London”}", "expected": {"name": "Ada", "city": "London"}}
+{"category": "ndjson", "input": "{\"event\": \"start\"}\n{\"event\": \"stop\"}\n", "expected": [{"event": "start"}, {"event": "stop"}]}
+{"category": "duplicates", "input": "{\"role\": \"user\", \"role\": \"admin\"}", "expected": {"role": "admin"}}
+{"category": "bom", "input": "﻿{\"a\": 1}", "expected": {"a": 1}}
+{"category": "yaml-ish", "input": "name: \"Ada\", age: 36", "expected": {"name": "Ada", "age": 36}}

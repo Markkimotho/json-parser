@@ -27,6 +27,47 @@ This document provides detailed information about the architecture, design decis
   └──────────────┘
 ```
 
+## Developer Engine (`engines/`)
+
+The parser moved from `app.py` into `engines/core.py`; `app.py` re-exports `Lexer`, `Parser`, `JSONParseError` and `TokenType` for existing callers. Six ecosystem modules sit on the core. None of them imports Flask.
+
+```
+                 ┌────────────── engines/ ───────────────────────────────────────┐
+ editor text ──► │ core.Lexer ──tokens──► core.Parser ──value──► types / query /  │
+                 │   capture_tokens        capture_ast, trace     compressor      │
+                 │                         duplicate_keys="record"                │
+                 │                         observer(ScalarEvent) ──► auditor      │
+                 │ healing: lenient lexer ─► repair parser ─► core.Parser (verify)│
+                 │ paths.path_child: one path format for AST, audit, JSONPath     │
+                 │ documents.DocumentCache: SHA-256 → parsed value (LRU)          │
+                 └────────────────────────────────────────────────────────────────┘
+                         ▲ JSON in/out
+ app.py (routes, limits) ┘◄──── fetch ──── static/engine/engine.js (+ lib.js, pure)
+```
+
+### Design decisions
+
+1. **Instrumentation is opt-in and adds little cost when off.** Token capture, AST building, tracing, path tracking and observers each sit behind a boolean. The uninstrumented path also got faster: whitespace and plain string runs are matched with one regex each instead of character by character.
+2. **The AST is built with an explicit node stack**, not by changing return values. `parse_object`/`parse_array` keep returning plain Python values, so `parser.parse()` is unchanged for every existing caller. Nodes point to their parent by `id`, so the tree serializes without cycles.
+3. **One path format everywhere** (`engines/paths.py`). AST nodes, audit findings, duplicate-key reports and JSONPath matches all format paths with `path_child`. A gate test asserts that every AST path resolves through the JSONPath engine to exactly that node.
+4. **The auditor reads source, not values.** Duplicate keys and the exact digits of `9007199254740993` are lost once a document becomes a Python `dict`. The auditor runs the core parser with `duplicate_keys="record"` and an observer that receives raw number text. The dashboard audits the *original* editor text first, so duplicates that healing would remove are still reported; it falls back to the healed text only when the original has syntax errors.
+5. **Healing emits pieces, not regex substitutions.** Regex rewriting corrupts string contents, for example a `//` inside a URL or a `'` inside a word. The lenient lexer understands strings, so every repair applies at token level. Output is a list of pieces (each token's original whitespace plus its text), so removing an earlier duplicate member is just blanking a range. Each repair is recorded with its source position, and the strict parser re-verifies the result.
+6. **Ambiguous damage is resolved by balance, not guesswork.** At a closer of the wrong kind (`[{"a": 1], …]`), the repairer checks which reading leaves the rest of the document balanced, using one suffix sum computed up front. That decides between "this `]` was a typo for `}`" and "the object is missing its `}`".
+7. **Types go through an IR.** Sample inference and JSON Schema both produce `Prim | ArrayOf | MapOf | Named | Enum | UnionOf` plus object definitions. Renderers only print IR, so the optional/nullable/union rules are written once. Python output is ordered children-first, and `model_rebuild()` is emitted only for real reference cycles.
+8. **The compact LLM format was chosen by measurement** (`evals/calibrate_tokens.py`, tiktoken cl100k/o200k): two-space indentation with `": "` saved 5% against minified JSON; one-space indentation with `":"` saves 13%. `decode_compact` exists so losslessness is proven by round-trip tests rather than assumed.
+9. **Recursion headroom instead of an iterative rewrite.** Each nesting level costs two Python frames, so the documented 1000-level limit used to fail at about 500 with `RecursionError`. `ensure_recursion_headroom` raises the interpreter limit, monotonically and only as far as needed. Since Python 3.11, Python-to-Python calls do not use the C stack, so this is safe. JSONPath descendant search and the auditor are iterative.
+
+### Known limits and failure modes
+
+- **Throughput** is 3 to 5 MB/s plain and 5 to 7x slower fully instrumented, hence the 512 KB visualization limit and the 20,000-entry caps on tokens, trace and AST nodes. Above the caps the API returns flags; it does not truncate silently.
+- **Healing is heuristic.** It fixes the patterns in the case table and the eval corpus. It cannot recover intent that was never written down: `'it's'` with an unescaped apostrophe, or two words with no separator. When it cannot produce valid JSON it says so (`valid: false` with the strict error) and never returns broken output as success. Numbers JSON cannot hold (`1e999`) are reported, not clamped.
+- **Lenient labels.** `word: {…}` with nothing after the container is read as a label in front of the document (LLM output like `Output: {...}`). With a following `, key: …` it is read as a brace-less object.
+- **Sample type inference only knows what it saw**: an array that is empty in the sample becomes `unknown[]`/`List[Any]`/`[]any`. Schema mode supports local `$ref` only (`#/$defs/...`, `#/definitions/...`, `#`) and raises `SchemaError` for remote refs.
+- **JSONPath `match()`/`search()`** use Python `re`, which cannot time out. Patterns over 200 characters, nested quantifiers and backreferences are rejected, and subjects are truncated to 10,000 characters to bound backtracking.
+- **The token estimator** has about 7% mean error and up to 40% on texts under 30 tokens. Exact counts depend on the target model's tokenizer.
+- **The document cache** is per process. Under gunicorn with several workers a query may miss and re-parse, which costs time but never gives a wrong result.
+- **Offsets.** The engine reports code-point offsets; browsers index UTF-16. `static/engine/lib.js#offsetMapper` converts them, so selection is correct for emoji and other astral characters.
+
 ## Component Details
 
 ### 1. Lexer (Tokenizer)
@@ -396,14 +437,12 @@ Response:
 
 ## Future Enhancements
 
-1. **Schema Validation**: Add JSON Schema support
-2. **Pretty Printing**: Format output with indentation
-3. **Performance Monitoring**: Track parse time, depth
-4. **Streaming Support**: Handle arbitrarily large files
-5. **Comments Extension**: Support JSON with comments
-6. **Custom Serialization**: Handle special types
-7. **Caching**: Cache parse results for same input
-8. **Incremental Parsing**: Resume from last position
+Already delivered by the Developer Engine: JSON Schema reading (types), pretty printing, parse-time and depth stats, comment handling (healing), and result caching.
+
+1. **Schema Validation**: validate documents against a JSON Schema, not just generate types from one
+2. **Streaming Support**: handle arbitrarily large files
+3. **Incremental Parsing**: re-parse only the edited region for live compile on large documents
+4. **Iterative core parser**: remove the recursion-limit dependency entirely
 
 ## References
 
