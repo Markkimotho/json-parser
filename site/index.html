@@ -1,1 +1,88 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Inspect, validate and format JSON in your browser."><title>JSON workbench</title><link rel="stylesheet" href="style.css"></head><body><main><header><a href="https://markkimotho.github.io/projects/">← More projects</a><span>JSON parser · browser edition</span></header><div class="hero"><p class="eyebrow">A little workbench for structured data</p><h1>Make sense of the braces.</h1><p>Validate, format and inspect JSON locally in your browser. Files are not uploaded.</p></div><div class="toolbar"><label for="file" class="file-label">Open .json file<input id="file" type="file" accept=".json,application/json"></label><button id="sample" type="button">Load sample</button><button id="format" type="button">Format</button><button id="minify" type="button">Minify</button><button id="copy" type="button">Copy result</button></div><div class="workspace"><section><label for="input">Input</label><textarea id="input" spellcheck="false" placeholder='{"hello": "world"}'></textarea></section><section><label for="output">Result</label><pre id="output" tabindex="0">Your formatted JSON appears here.</pre></section></div><p id="status" role="status" aria-live="polite">Ready.</p><p class="footnote">This browser edition uses the built-in JavaScript JSON parser. The repository also contains the original Python lexer/parser and its 38-test suite.</p></main><script type="module" src="app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Inspect, validate and format JSON in your browser."
+    />
+    <title>JSON Workbench</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="menu-bar">
+      <span class="menu-mark" aria-hidden="true">▣</span
+      ><strong>JSON Workbench</strong><span>Browser edition</span
+      ><a href="https://markkimotho.github.io/projects/">Mark's projects ↗</a>
+    </div>
+    <main class="desktop">
+      <div class="desktop-icon" aria-hidden="true">
+        <span>{ }</span><small>JSON</small>
+      </div>
+      <section class="window" aria-label="JSON Workbench application">
+        <div class="title-bar">
+          <span class="close-box" aria-hidden="true"></span
+          ><span class="title-text">JSON Workbench</span
+          ><span class="zoom-box" aria-hidden="true"></span>
+        </div>
+        <div class="window-content">
+          <header>
+            <div class="app-icon" aria-hidden="true">{<br />&nbsp;}</div>
+            <div>
+              <p class="eyebrow">Version 1.0 / Browser edition</p>
+              <h1>JSON Workbench</h1>
+              <p>
+                Open, validate, and format JSON right here. Files stay on your
+                computer.
+              </p>
+            </div>
+          </header>
+          <div class="toolbar" aria-label="JSON tools">
+            <label for="file" class="file-label"
+              >Open file…<input
+                id="file"
+                type="file"
+                accept=".json,application/json" /></label
+            ><button id="sample" type="button">Load sample</button
+            ><button id="format" type="button" class="primary">Format</button
+            ><button id="minify" type="button">Minify</button
+            ><button id="copy" type="button">Copy result</button>
+          </div>
+          <div class="workspace">
+            <section class="pane">
+              <div class="pane-title">
+                <label for="input">Untitled.json</label><span>INPUT</span>
+              </div>
+              <textarea
+                id="input"
+                spellcheck="false"
+                placeholder='{"hello": "world"}'
+              ></textarea>
+            </section>
+            <section class="pane">
+              <div class="pane-title">
+                <span id="output-label">Formatted result</span
+                ><span>OUTPUT</span>
+              </div>
+              <pre id="output" tabindex="0" aria-labelledby="output-label">
+Your formatted JSON appears here.</pre
+              >
+            </section>
+          </div>
+          <div class="status-bar">
+            <span class="status-light" aria-hidden="true"></span>
+            <p id="status" role="status" aria-live="polite">Ready.</p>
+            <span class="status-end">LOCAL / NO UPLOADS</span>
+          </div>
+        </div>
+      </section>
+      <p class="footnote">
+        This browser edition uses the built-in JavaScript JSON parser. The
+        repository also contains the original Python lexer/parser and its
+        38-test suite.
+      </p>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
