@@ -1,4 +1,8 @@
-# JSON Parser - Robust & Scalable
+# JSON Parser
+
+The [browser workbench](https://markkimotho.github.io/json-parser/) validates, formats and minifies JSON without uploading it. It uses the browser's native JSON parser. The original Flask interface and hand-written Python lexer/parser remain in this repository; the browser build does not run the Python parser.
+
+Run the browser edition locally with `python3 -m http.server 8000 --directory site`, then open `http://127.0.0.1:8000/`. Run the Python tests with `python3 -m unittest discover -s resources/tests` and browser logic tests with `node --test site/logic.test.js`.
 
 ## Overview
 
