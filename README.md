@@ -1,6 +1,6 @@
 # JSON Parser
 
-The [public browser workbench](https://markkimotho.github.io/json-parser/) validates, formats and minifies JSON without uploading it. GitHub Pages uses the browser's native parser. The Python edition serves the same interface through Flask and sends input to the original hand-written lexer/parser.
+Choose the [browser workbench](https://markkimotho.github.io/json-parser/) to validate, format, and minify JSON without uploading it, or the [hosted Python workbench](https://json-parser-python.onrender.com/python/) to use this repository's hand-written lexer/parser through Flask.
 
 ## Python version
 
@@ -11,9 +11,9 @@ python3 -m pip install -r requirements.txt
 python3 app.py
 ```
 
-Open [http://127.0.0.1:5001/python/](http://127.0.0.1:5001/python/). This uses `Lexer` and `Parser` from `app.py` through the `/parse-json` endpoint; the page marks the Python parser as active. Inputs are sent to the Flask process on your machine. The older terminal interface remains at `/terminal/`.
+Open [http://127.0.0.1:5001/python/](http://127.0.0.1:5001/python/) for the local Python edition. It uses `Lexer` and `Parser` from `app.py` through `/parse-json`; inputs are sent to the Flask process on your machine. The older terminal interface remains at `/terminal/`.
 
-The repo also includes a `render.yaml` for a free Render web service. Connect this repository to Render as a Blueprint to deploy the same Python workbench. Verify the resulting `/python/` page and `/parse-json` endpoint before publishing its URL. A hosted Python edition sends submitted JSON to that server; use the browser edition if you need to keep input on your device. Render's free service may take time to wake after inactivity.
+The [public Python edition](https://json-parser-python.onrender.com/python/) runs the same Flask app on Render. Submitted JSON is sent to that server; use the browser edition if you need to keep input on your device. Render's free service may take time to wake after inactivity. Its deployment configuration is in `render.yaml`.
 
 To run the browser-only edition locally: `python3 -m http.server 8000 --directory site`, then open `http://127.0.0.1:8000/`. Run the Python tests with `python3 -m unittest discover -s resources/tests` and browser logic tests with `node --test site/logic.test.js`.
 
@@ -265,7 +265,7 @@ JSONParseError at line 1, column 1: Leading zeros not allowed in numbers
 
 ## Deployment
 
-Only the browser edition is currently deployed on GitHub Pages. The previous Heroku app URL is no longer live. `render.yaml` prepares a free Python web service, but its public URL should be linked only after deployment is verified.
+The browser edition is hosted on GitHub Pages. The [Python edition](https://json-parser-python.onrender.com/python/) is hosted on Render using `render.yaml` and Gunicorn. The previous Heroku app URL is no longer live.
 
 ## Architecture
 

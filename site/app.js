@@ -9,8 +9,19 @@ if (pythonMode) {
   document.querySelector("#mode-label").textContent =
     "Python lexer/parser active · input is sent to this Flask server.";
   document.querySelector("#mode-short").textContent = "PYTHON SERVER";
-  document.querySelector(".parser-mode a").textContent =
-    "Python setup & source ↗";
+  const sourceLink = document.querySelector(".parser-mode a");
+  sourceLink.href = "https://github.com/Markkimotho/json-parser#python-version";
+  sourceLink.textContent = "Python source & local setup ↗";
+  const browserLink = document.createElement("a");
+  browserLink.href = "https://markkimotho.github.io/json-parser/";
+  browserLink.textContent = "browser edition";
+  document
+    .querySelector(".footnote")
+    .replaceChildren(
+      "This edition sends submitted JSON to the Flask server and parses it with the repository's Python lexer/parser. Use the ",
+      browserLink,
+      " to keep input on your device.",
+    );
 }
 
 async function parseWithPython(indent) {
